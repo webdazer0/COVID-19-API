@@ -1,5 +1,5 @@
-const express = require('express')
-const cors = require('cors');
+import express from 'express'
+import cors from 'cors'
 const app = express()
 
 app.use(cors())
@@ -8,8 +8,8 @@ app.use(express.urlencoded({ extended: true }))
 
 const port = 80
 
-const jhuEdu = require('./api/jhu-edu')
-const kcdc = require('./api/korea-kcdc')
+import jhuEdu from './api/jhu-edu.js'
+import kcdc from './api/korea-kcdc.js'
 
 app.use('/jhu-edu', jhuEdu)
 app.use('/kcdc', kcdc)

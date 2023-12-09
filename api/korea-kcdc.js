@@ -1,14 +1,13 @@
-const express = require('express')
-const router = express.Router()
+import { Router } from 'express'
+const router = Router()
 
-const fetch = require('node-fetch')
-const fs = require('fs')
+import fetch from 'node-fetch'
+import fs from 'fs'
 const url = 'https://raw.githubusercontent.com/LiveCoronaDetector/livecod/master/data/koreaRegionalData.js'
 const tempFilePath = './dataset/temp-kcdc.js'
 const tempModulePath = '../dataset/temp-kcdc.js'
-const exportModule = 'module.exports = koreaRegionalData;'
-
-const schedule = require('node-schedule')
+const importModule = '\n\nexport default koreaRegionalData'
+import schedule from 'node-schedule'
 schedule.scheduleJob('12 * * * *', updateDataSet) // Call every hour at 12 minutes
 
 let koreaRegionalData = {}
@@ -24,12 +23,12 @@ async function updateDataSet () {
     const response = await fetch(url)
     const body = await response.text()
 
-    fs.writeFile(tempFilePath, body + exportModule, function (err) {
+    fs.writeFile(tempFilePath, body + importModule, async function (err) {
       if (err) {
         console.error(err)
       } else {
         try {
-          koreaRegionalData = require(tempModulePath)
+          koreaRegionalData = await import(`${tempModulePath}`)
           console.log('Korea KCDC data was saved!')
         } catch (e) {
           console.error(e)
@@ -45,4 +44,4 @@ async function updateDataSet () {
 
 updateDataSet()
 
-module.exports = router
+export default router
