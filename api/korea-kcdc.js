@@ -1,13 +1,14 @@
 import { Router } from 'express'
-const router = Router()
-
 import fetch from 'node-fetch'
 import fs from 'fs'
+import schedule from 'node-schedule'
+
+const router = Router()
+
 const url = 'https://raw.githubusercontent.com/LiveCoronaDetector/livecod/master/data/koreaRegionalData.js'
 const tempFilePath = './dataset/temp-kcdc.js'
 const tempModulePath = '../dataset/temp-kcdc.js'
 const importModule = '\n\nexport default koreaRegionalData'
-import schedule from 'node-schedule'
 schedule.scheduleJob('12 * * * *', updateDataSet) // Call every hour at 12 minutes
 
 let koreaRegionalData = {}

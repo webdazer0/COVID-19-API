@@ -1,11 +1,17 @@
 import { Router } from 'express'
-import { createRequire } from 'module'
-// support `require` only to load json files
-const require = createRequire(import.meta.url)
-const router = Router()
-
 import lookup from 'country-code-lookup'
 import nestedProperty from 'nested-property'
+import request from 'request'
+import csv from 'csvtojson'
+import schedule from 'node-schedule'
+// support `require` only to load json files
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
+const fixedCountryCodes = require('../dataset/country-codes.json')
+const iso2CountryLoc = require('../dataset/iso2-country-loc.json')
+
+const router = Router()
+
 
 const column = {
   PROVINCE_STATE: 'provincestate',
@@ -16,18 +22,13 @@ const column = {
   RECOVERED: 'recovered'
 }
 
-import request from 'request'
-import csv from 'csvtojson'
 const csvPath = {
   confirmed: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv',
   deaths: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv',
   recovered: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv'
 }
 
-const fixedCountryCodes = require('../dataset/country-codes.json')
-const iso2CountryLoc = require('../dataset/iso2-country-loc.json')
 
-import schedule from 'node-schedule'
 schedule.scheduleJob('42 * * * *', updateCSVDataSet) // Call every hour at 42 minutes
 
 const responseSet = {
